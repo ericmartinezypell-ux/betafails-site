@@ -55,10 +55,13 @@ async function initHome() {
       ? `background-image:url('${hero.imagem_card}');background-size:cover;background-position:center;`
       : `background:${catBg(hero.categoria)};`;
     heroEl.innerHTML = `
+      <div class="home-hero-right" style="${bgStyle}">
+        ${hero.imagem_card ? '' : `<span class="hero-emoji">${catEmoji(hero.categoria)}</span>`}
+      </div>
       <div class="home-hero-left">
         <div class="hero-case-tag">DOSSIÊ ${padCase(hero.case_number)}</div>
-        <div class="hero-title">${hero.empresa.toUpperCase()}</div>
-        <div class="hero-tagline"><span>${hero.tagline.split('.')[0]}.</span> ${hero.tagline.split('.').slice(1).join('.').trim()}</div>
+        <div class="hero-title">${(hero.titulo || hero.empresa).toUpperCase()}</div>
+        <div class="hero-tagline">${hero.tagline}</div>
         <div class="hero-meta">${renderMetaBadges(hero)}</div>
         <div class="hero-rating">
           <span class="hero-rating-label">Popularidade</span>
@@ -68,11 +71,6 @@ async function initHome() {
         <div class="hero-actions">
           <a href="/fails/?slug=${hero.slug}" class="btn btn-outline">VER DOSSIÊ →</a>
           <button class="btn hero-fav" title="Favoritar">☆</button>
-        </div>
-      </div>
-      <div class="home-hero-right">
-        <div class="home-hero-img" style="${bgStyle}">
-          ${hero.imagem_card ? '' : `<span style="font-size:80px">${catEmoji(hero.categoria)}</span>`}
         </div>
       </div>`;
   }
@@ -192,7 +190,7 @@ async function renderDossiePage(slug, container) {
         <div class="hero-case-tag" style="background:${color};color:#0A0E17">DOSSIÊ ${padCase(d.case_number)}</div>
         <button class="fav-btn">☆ Favoritar</button>
       </div>
-      <div class="dossie-title">${d.empresa.toUpperCase()}</div>
+      <div class="dossie-title">${(d.titulo || d.empresa).toUpperCase()}</div>
       <div class="dossie-tagline">${d.tagline}</div>
       <div class="dossie-meta">${renderMetaBadges(d)}</div>
       <div class="dossie-rating">
