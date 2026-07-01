@@ -1,0 +1,6 @@
+# Cloudflare Pages — URL rewriting para slugs limpos
+# /fails/kodak  →  /fails/?slug=kodak
+/fails/:slug  /fails/?slug=:slug  200
+
+# /colecoes/empresas-que-ignoraram-o-futuro  →  /colecoes/?colecao=...
+/colecoes/:slug  /colecoes/?colecao=:slug  200

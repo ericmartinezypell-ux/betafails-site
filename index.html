@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beta Fails — Onde todo mundo erra, e todo mundo assiste</title>
+  <meta name="description" content="Dossiês sobre os maiores erros corporativos e históricos da humanidade. Cada fail documentado, analisado e arquivado.">
+  <meta property="og:title" content="Beta Fails">
+  <meta property="og:description" content="Os maiores fails da história, documentados como dossiês.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://betafails.com.br">
+  <link rel="canonical" href="https://betafails.com.br/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <span class="nav-logo-top">BETA</span>
+    <span class="nav-logo-bot">FAILS</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/fails/">Dossiês</a></li>
+    <li><a href="/colecoes/">Coleções</a></li>
+    <li><a href="/rankings/">Rankings</a></li>
+    <li><a href="/loja/">Loja</a></li>
+    <li><a href="/sobre/">Sobre</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="nav-search" title="Buscar" onclick="location.href='/fails/'">🔍</button>
+    <button class="nav-cta" onclick="document.getElementById('newsletter').scrollIntoView({behavior:'smooth'})">Assine a newsletter</button>
+  </div>
+</nav>
+
+<main>
+  <!-- Hero — populado pelo JS com o dossiê de maior score -->
+  <div id="home-hero" class="home-hero" style="min-height:320px">
+    <div class="loading"><div class="spinner"></div> Carregando...</div>
+  </div>
+
+  <!-- Últimos Fails -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-title">ÚLTIMOS FAILS</div>
+      <a href="/fails/" class="section-link">Ver todos →</a>
+    </div>
+    <div id="fails-grid" class="grid-3">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+  </section>
+
+  <!-- Coleções -->
+  <section class="section" style="padding-top:0;border-top:1px solid rgba(255,255,255,0.06)">
+    <div class="section-head" style="padding-top:24px">
+      <div class="section-title">COLEÇÕES</div>
+      <a href="/colecoes/" class="section-link">Ver todas →</a>
+    </div>
+    <div id="colecao-destaque"></div>
+    <div id="colecoes-grid" class="grid-2"></div>
+  </section>
+
+  <!-- Newsletter -->
+  <div id="newsletter" class="newsletter-cta">
+    <h2>NÃO PERCA O PRÓXIMO FAIL</h2>
+    <p>Toda semana um novo dossiê no seu email. Sem spam, só história.</p>
+    <form class="newsletter-form" onsubmit="event.preventDefault()">
+      <input type="email" class="newsletter-input" placeholder="seu@email.com">
+      <button type="submit" class="btn btn-yellow">Assinar</button>
+    </form>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-logo"><span>BETA</span>&nbsp;<span style="color:#FF4B3E">FAILS</span></div>
+  <div class="footer-links">
+    <a href="/sobre/">Sobre</a>
+    <a href="/fails/">Dossiês</a>
+    <a href="/rankings/">Rankings</a>
+    <a href="https://youtube.com/@betafails" target="_blank" rel="noopener">YouTube ↗</a>
+  </div>
+  <div class="footer-copy">© 2024 Beta Fails</div>
+</footer>
+
+<script src="/js/config.js"></script>
+<script src="/js/airtable.js"></script>
+<script src="/js/components.js"></script>
+<script src="/js/main.js"></script>
+</body>
+</html>
