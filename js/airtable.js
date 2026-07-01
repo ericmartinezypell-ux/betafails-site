@@ -253,6 +253,7 @@ function airtableRecord(r) {
     case_number: f.case_number,
     slug: f.slug,
     empresa: f.empresa,
+    canal: f.canal || '',
     categoria: f.categoria,
     ano: f.ano,
     tagline: f.tagline || '',

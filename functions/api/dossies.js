@@ -44,10 +44,13 @@ export async function onRequestGet(context) {
 
   const url = new URL(request.url);
   const slug = url.searchParams.get('slug');
+  // Canal do site: só mostra dossiês deste canal. Default BF PT.
+  // O site BF EN futuro reusa a mesma Function com SITE_CANAL="BF EN".
+  const canal = env.SITE_CANAL || 'BF PT';
 
   const formula = slug
-    ? `AND(status="Publicado",slug="${esc(slug)}")`
-    : `status="Publicado"`;
+    ? `AND(status="Publicado",canal="${esc(canal)}",slug="${esc(slug)}")`
+    : `AND(status="Publicado",canal="${esc(canal)}")`;
 
   const endpoint = `https://api.airtable.com/v0/${base}/${encodeURIComponent(table)}`;
 
