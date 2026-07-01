@@ -1,10 +1,8 @@
 /* ─── CONFIG ─────────────────────────────────────────────────────── */
-const BF_CONFIG = {
-  apiKey:  window.BF_AIRTABLE_KEY  || '',
-  baseId:  window.BF_AIRTABLE_BASE || '',
-  table:   'DOSSIÊS',
-  useAirtable: !!(window.BF_AIRTABLE_KEY && window.BF_AIRTABLE_BASE),
-};
+/* O site lê os dossiês via a Pages Function /api/dossies, que acessa o
+   Airtable no servidor (o token nunca vem ao cliente). Se a API não estiver
+   configurada ou não retornar registros, cai no fallback DOSSIES_SEED. */
+const BF_API = '/api/dossies';
 
 /* ─── DADOS HARDCODED (fallback antes do Airtable existir) ────────── */
 const DOSSIES_SEED = [
@@ -230,17 +228,26 @@ function padCase(n) {
   return '#' + String(n).padStart(3, '0');
 }
 
-/* ─── API AIRTABLE ───────────────────────────────────────────────── */
-async function airtableFetch(path) {
-  const resp = await fetch(`https://api.airtable.com/v0/${BF_CONFIG.baseId}/${encodeURIComponent(BF_CONFIG.table)}${path}`, {
-    headers: { Authorization: `Bearer ${BF_CONFIG.apiKey}` }
-  });
-  if (!resp.ok) throw new Error(`Airtable error ${resp.status}`);
+/* ─── API (Pages Function → Airtable) ────────────────────────────── */
+async function apiFetch(query = '') {
+  const resp = await fetch(`${BF_API}${query}`);
+  if (!resp.ok) throw new Error(`API error ${resp.status}`);
   return resp.json();
 }
 
 function airtableRecord(r) {
   const f = r.fields;
+  const imp = Number(f.score_impacto) || 0;
+  const cus = Number(f.score_custo) || 0;
+  const ver = Number(f.score_vergonha) || 0;
+  // média das 3 sub-scores (escala 0–10) convertida para a escala 0–5 do card
+  const score_bf = Math.round(((imp + cus + ver) / 3 / 2) * 10) / 10;
+
+  let timeline = [];
+  if (f.timeline) {
+    try { timeline = JSON.parse(f.timeline); } catch (e) { timeline = []; }
+  }
+
   return {
     id: r.id,
     case_number: f.case_number,
@@ -248,56 +255,72 @@ function airtableRecord(r) {
     empresa: f.empresa,
     categoria: f.categoria,
     ano: f.ano,
-    tagline: f.tagline,
-    score_impacto: f.score_impacto,
-    score_custo: f.score_custo,
-    score_vergonha: f.score_vergonha,
-    score_bf: f.score_bf,
+    tagline: f.tagline || '',
+    score_impacto: imp,
+    score_custo: cus,
+    score_vergonha: ver,
+    score_bf,
     youtube_id: f.youtube_id || '',
     imagem_card: f.imagem_card || '',
     texto_editorial: f.texto_editorial ? f.texto_editorial.split('\n\n') : [],
-    amazon_asin: f.asin_amazon || '',
-    amazon_titulo: '',
-    amazon_autor: '',
-    status: f.status,
-    publicado_em: f.publicado_em,
-    quote: '', quote_attr: '', timeline: [], relacionados: [],
+    quote: f.quote || '',
+    quote_attr: f.quote_attr || '',
+    timeline: Array.isArray(timeline) ? timeline : [],
+    amazon_query: f.amazon_query || '',
+    amazon_asin: '', amazon_titulo: '', amazon_autor: '',
+    relacionados: [],
+    status: 'publicado',
+    publicado_em: f.publicado_em || '',
   };
 }
 
 /* ─── FUNÇÕES PÚBLICAS ───────────────────────────────────────────── */
-async function fetchDossies(filtros = {}) {
-  if (!BF_CONFIG.useAirtable) {
-    let data = DOSSIES_SEED.filter(d => d.status === 'publicado');
-    if (filtros.categoria) data = data.filter(d => d.categoria === filtros.categoria);
-    if (filtros.sort === 'score') data.sort((a, b) => b.score_bf - a.score_bf);
-    if (filtros.sort === 'custo') data.sort((a, b) => b.score_custo - a.score_custo);
-    if (filtros.sort === 'vergonha') data.sort((a, b) => b.score_vergonha - a.score_vergonha);
-    return data;
-  }
+function applyFilters(data, filtros = {}) {
+  let out = data.slice();
+  if (filtros.categoria) out = out.filter(d => d.categoria === filtros.categoria);
+  if (filtros.sort === 'score')    out.sort((a, b) => b.score_bf - a.score_bf);
+  if (filtros.sort === 'custo')    out.sort((a, b) => b.score_custo - a.score_custo);
+  if (filtros.sort === 'vergonha') out.sort((a, b) => b.score_vergonha - a.score_vergonha);
+  return out;
+}
+
+// cache da lista publicada, para não refazer o fetch a cada seção da página
+let _dossiesCache = null;
+async function getAllDossies() {
+  if (_dossiesCache) return _dossiesCache;
   try {
-    let formula = 'status="publicado"';
-    if (filtros.categoria) formula += ` AND categoria="${filtros.categoria}"`;
-    const sort = filtros.sort ? `&sort[0][field]=${filtros.sort === 'score' ? 'score_bf' : filtros.sort}&sort[0][direction]=desc` : '';
-    const data = await airtableFetch(`?filterByFormula=AND(${formula})${sort}`);
-    return data.records.map(airtableRecord);
+    const data = await apiFetch('');
+    const recs = (data.records || []).map(airtableRecord);
+    _dossiesCache = recs.length ? recs : DOSSIES_SEED.filter(d => d.status === 'publicado');
   } catch (e) {
-    console.warn('Airtable indisponível, usando dados seed', e);
-    return DOSSIES_SEED;
+    console.warn('API indisponível, usando dados seed', e);
+    _dossiesCache = DOSSIES_SEED.filter(d => d.status === 'publicado');
   }
+  return _dossiesCache;
+}
+
+async function fetchDossies(filtros = {}) {
+  const all = await getAllDossies();
+  return applyFilters(all, filtros);
 }
 
 async function fetchDossie(slug) {
-  if (!BF_CONFIG.useAirtable) {
-    return DOSSIES_SEED.find(d => d.slug === slug) || null;
-  }
   try {
-    const data = await airtableFetch(`?filterByFormula=slug="${slug}"&maxRecords=1`);
-    if (!data.records.length) return null;
-    return airtableRecord(data.records[0]);
+    const data = await apiFetch(`?slug=${encodeURIComponent(slug)}`);
+    if (data.records && data.records.length) {
+      const d = airtableRecord(data.records[0]);
+      // relacionados: mesma categoria, top 3, excluindo o próprio
+      const all = await getAllDossies();
+      d.relacionados = all
+        .filter(x => x.categoria === d.categoria && x.slug !== d.slug)
+        .slice(0, 3)
+        .map(x => x.slug);
+      return d;
+    }
   } catch (e) {
-    return DOSSIES_SEED.find(d => d.slug === slug) || null;
+    console.warn('API indisponível, usando dados seed', e);
   }
+  return DOSSIES_SEED.find(d => d.slug === slug) || null;
 }
 
 async function fetchColecoes() {

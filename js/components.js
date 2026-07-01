@@ -95,16 +95,29 @@ function renderTimeline(eventos) {
 
 /* ─── AMAZON WIDGET ──────────────────────────────────────────────── */
 function renderAmazonWidget(d) {
-  if (!d.amazon_asin) return '';
-  const url = `https://www.amazon.com.br/dp/${d.amazon_asin}?tag=betafails-20`;
+  const TAG = 'betafails-20';
+  // Seed: livro específico via ASIN (com título/autor).
+  // Gerado: link de busca por tema (amazon_query) — sem risco de ASIN inválido.
+  let url, titulo, autor;
+  if (d.amazon_asin) {
+    url = `https://www.amazon.com.br/dp/${d.amazon_asin}?tag=${TAG}`;
+    titulo = d.amazon_titulo || 'Leitura relacionada';
+    autor = d.amazon_autor || '';
+  } else if (d.amazon_query) {
+    url = `https://www.amazon.com.br/s?k=${encodeURIComponent(d.amazon_query)}&tag=${TAG}`;
+    titulo = 'Livros sobre este tema';
+    autor = d.amazon_query;
+  } else {
+    return '';
+  }
   return `
     <div class="aside-box">
       <div class="aside-title">Leitura relacionada</div>
       <div class="amazon-card">
         <div class="amazon-cover">📚</div>
         <div class="amazon-info">
-          <div class="amazon-book-title">${d.amazon_titulo}</div>
-          <div class="amazon-author">${d.amazon_autor}</div>
+          <div class="amazon-book-title">${titulo}</div>
+          <div class="amazon-author">${autor}</div>
           <a href="${url}" target="_blank" rel="noopener" class="amazon-btn">Ver na Amazon ↗</a>
         </div>
       </div>
