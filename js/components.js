@@ -25,7 +25,7 @@ function renderFailCard(d, options = {}) {
         <div class="fc-badge" style="background:${color};color:#0A0E17">${padCase(d.case_number)}</div>
       </div>
       <div class="fc-body">
-        <div class="fc-name">${d.empresa}</div>
+        <div class="fc-name">${d.titulo || d.empresa}</div>
         <div class="fc-meta">${d.categoria} · ${d.ano}</div>
         <div class="fc-stars">${renderStars(d.score_bf)} <span style="font-size:12px;color:#FFD400;font-family:'Bangers',cursive;letter-spacing:1px">${d.score_bf.toFixed(1)}</span></div>
       </div>
@@ -51,7 +51,7 @@ function renderRankItem(d, rank) {
       </div>
       <div class="ri-info">
         <div class="ri-case">DOSSIÊ ${padCase(d.case_number)}</div>
-        <div class="ri-name">${d.empresa}</div>
+        <div class="ri-name">${d.titulo || d.empresa}</div>
         <div class="ri-tag">${d.tagline}</div>
       </div>
       <div class="ri-right">
