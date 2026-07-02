@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conexão Esperta — Protótipo (Smart Travel)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#0B63F6; --blue-d:#0846B8; --yellow:#FFC93C; --pink:#FF3D8B;
+    --cyan:#12C5D9; --ink:#0F1B33; --ink-2:#4B5B76; --line:#E4EAF3;
+    --bg:#F5F8FE; --card:#FFFFFF; --green:#12B886;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;color:var(--ink);background:var(--bg);
+    background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:26px 26px;line-height:1.55}
+  h1,h2,h3,.display{font-family:'Outfit',sans-serif}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+  .tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+    padding:5px 12px;border-radius:999px}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:9px;font-family:'Outfit';font-weight:800;font-size:19px}
+  .logo .plane{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--cyan));
+    display:grid;place-items:center;color:#fff;font-size:15px;transform:rotate(-8deg)}
+  .logo b{color:var(--blue)} .logo span{color:var(--ink)}
+  .nav-links{display:flex;gap:26px;font-size:14px;font-weight:500;color:var(--ink-2)}
+  .nav-links a:hover{color:var(--blue)}
+  .nav-cta{background:var(--ink);color:#fff;font-weight:600;font-size:13px;padding:9px 16px;border-radius:10px}
+
+  /* HERO */
+  .hero{text-align:center;padding:64px 0 34px}
+  .hero .kicker{color:var(--blue);font-weight:600;font-size:14px;letter-spacing:.3px}
+  .hero h1{font-size:clamp(30px,5vw,52px);font-weight:800;line-height:1.05;margin:14px auto 12px;max-width:760px;letter-spacing:-.5px}
+  .hero h1 .mark{background:linear-gradient(180deg,transparent 60%,var(--yellow) 60%);padding:0 4px}
+  .hero p{color:var(--ink-2);font-size:18px;max-width:560px;margin:0 auto 30px}
+  .hero .ask{font-family:'Outfit';font-weight:700;font-size:15px;color:var(--ink-2);margin-bottom:16px}
+
+  /* HUB DOORS */
+  .hubs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:840px;margin:0 auto}
+  .hub{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 16px;text-align:center;
+    transition:.18s;box-shadow:0 4px 16px rgba(15,27,51,.04)}
+  .hub:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(11,99,246,.14);border-color:transparent}
+  .hub .ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:24px;margin:0 auto 12px}
+  .hub h3{font-size:16px;font-weight:700} .hub small{color:var(--ink-2);font-size:12.5px}
+  .hub.d1 .ic{background:#E6F0FF} .hub.d2 .ic{background:#FFF4D6}
+  .hub.d3 .ic{background:#FFE3EE} .hub.d4 .ic{background:#DCF7F4}
+
+  /* SECTIONS */
+  section.blk{padding:46px 0}
+  .head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px}
+  .head h2{font-size:27px;font-weight:800;letter-spacing:-.3px}
+  .head h2 .u{color:var(--blue)} .head .lk{color:var(--blue);font-weight:600;font-size:14px}
+  .sub{color:var(--ink-2);font-size:14px;margin-top:3px}
+
+  /* BOARDING PASS — Decisão Esperta */
+  .passes{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+  .pass{position:relative;background:var(--card);border-radius:18px;display:flex;overflow:hidden;
+    box-shadow:0 10px 30px rgba(15,27,51,.08);border:1px solid var(--line)}
+  .pass .main{flex:1;padding:20px 22px}
+  .pass .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .pass .brandtag{font-family:'Outfit';font-weight:800;font-size:11px;letter-spacing:1px;color:var(--blue)}
+  .pass .flag{font-size:12px;color:var(--ink-2);font-weight:600}
+  .pass h3{font-family:'Outfit';font-size:26px;font-weight:800;line-height:1;margin-bottom:2px}
+  .pass .country{color:var(--ink-2);font-size:13px;margin-bottom:14px}
+  .pass .rows{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+  .pass .row{display:flex;align-items:center;gap:8px;font-size:13px}
+  .pass .row .lbl{color:var(--ink-2);width:96px;font-weight:500}
+  .pass .stars{color:var(--yellow);letter-spacing:1px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{background:#EEF3FB;color:var(--ink-2);font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:999px}
+  .pass .go{display:inline-flex;align-items:center;gap:6px;background:var(--blue);color:#fff;font-weight:600;
+    font-size:13px;padding:10px 16px;border-radius:11px}
+  /* stub */
+  .pass .stub{width:150px;flex-shrink:0;background:linear-gradient(160deg,var(--blue),var(--blue-d));color:#fff;
+    padding:20px 16px;display:flex;flex-direction:column;position:relative}
+  .pass .stub::before,.pass .stub::after{content:'';position:absolute;left:-9px;width:18px;height:18px;
+    border-radius:50%;background:var(--bg)}
+  .pass .stub::before{top:-9px} .pass .stub::after{bottom:-9px}
+  .perf{position:absolute;top:8px;bottom:8px;border-left:2px dashed rgba(255,255,255,.5)}
+  .stub .slbl{font-size:10px;opacity:.8;letter-spacing:1px;text-transform:uppercase}
+  .stub .sval{font-family:'Outfit';font-weight:700;font-size:17px;margin-bottom:12px}
+  .verdict{margin-top:auto;background:var(--green);color:#fff;font-weight:700;font-size:12px;
+    padding:6px 10px;border-radius:8px;text-align:center;font-family:'Outfit';letter-spacing:.5px}
+  .barcode{margin-top:12px;height:34px;background:repeating-linear-gradient(90deg,#fff 0 2px,transparent 2px 4px,
+    #fff 4px 5px,transparent 5px 9px);opacity:.85;border-radius:3px}
+
+  /* DICAS */
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .gcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;transition:.18s;
+    box-shadow:0 4px 16px rgba(15,27,51,.04)}
+  .gcard:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(15,27,51,.1)}
+  .gcard .badge{font-size:11px;font-weight:700;color:var(--pink);letter-spacing:.5px}
+  .gcard h3{font-family:'Outfit';font-size:18px;font-weight:700;margin:8px 0 6px;line-height:1.15}
+  .gcard p{color:var(--ink-2);font-size:13.5px;margin-bottom:14px}
+  .gcard .foot{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--ink-2)}
+  .gcard .save{background:#FFF4D6;color:#8a6d13;font-weight:700;padding:3px 9px;border-radius:999px}
+
+  /* FERRAMENTAS */
+  .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .tool{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;gap:16px;
+    box-shadow:0 4px 16px rgba(15,27,51,.04);transition:.18s}
+  .tool:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(15,27,51,.1)}
+  .tool .ticon{width:52px;height:52px;border-radius:14px;background:#EEF3FB;display:grid;place-items:center;
+    font-size:24px;flex-shrink:0}
+  .tool h3{font-family:'Outfit';font-size:17px;font-weight:700}
+  .tool .verd{font-size:12px;font-weight:700;color:var(--green)}
+  .tool p{color:var(--ink-2);font-size:13px;margin:6px 0 10px}
+  .tool .pc{display:flex;gap:14px;font-size:12px;margin-bottom:10px}
+  .tool .pro{color:var(--green);font-weight:600} .tool .con{color:var(--pink);font-weight:600}
+  .tool .go2{color:var(--blue);font-weight:600;font-size:13px}
+
+  /* NEWSLETTER (boarding pass) */
+  .nl{background:linear-gradient(135deg,var(--ink),#1b2c4d);color:#fff;border-radius:22px;padding:38px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;position:relative;overflow:hidden}
+  .nl::after{content:'✈';position:absolute;right:-10px;top:-20px;font-size:180px;opacity:.06;transform:rotate(-18deg)}
+  .nl h2{font-size:26px;font-weight:800;margin-bottom:6px}
+  .nl p{color:#c4d0e6;font-size:14px;max-width:420px}
+  .nl form{display:flex;gap:8px;flex-shrink:0}
+  .nl input{border:none;border-radius:11px;padding:13px 15px;font-size:14px;width:220px;font-family:inherit}
+  .nl button{background:var(--yellow);color:var(--ink);font-weight:700;border:none;border-radius:11px;
+    padding:13px 20px;font-size:14px;cursor:pointer;font-family:'Outfit'}
+
+  footer{border-top:1px solid var(--line);padding:26px 0;margin-top:20px;color:var(--ink-2);font-size:13px;
+    display:flex;justify-content:space-between;align-items:center}
+
+  .protobar{background:var(--ink);color:#fff;text-align:center;font-size:12.5px;padding:8px;font-weight:500}
+  .protobar b{color:var(--yellow)}
+
+  @media(max-width:860px){
+    .hubs{grid-template-columns:repeat(2,1fr)} .passes,.tools{grid-template-columns:1fr}
+    .cards3{grid-template-columns:1fr} .nav-links{display:none} .nl{flex-direction:column;text-align:center}
+    .nl form{flex-direction:column;width:100%} .nl input{width:100%}
+  }
+</style>
+</head>
+<body>
+
+<div class="protobar">🧭 <b>PROTÓTIPO</b> Conexão Esperta — conceito visual pra validação. Conteúdo é exemplo. Backend definido: <b>WordPress</b>.</div>
+
+<nav><div class="wrap nav">
+  <a class="logo"><span class="plane">✈</span><b>Conexão</b><span>Esperta</span></a>
+  <div class="nav-links">
+    <a>Destinos</a><a>Dicas Espertas</a><a>Ofertas</a><a>Ferramentas</a><a>Newsletter</a>
+  </div>
+  <a class="nav-cta">Assine grátis</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="kicker">SMART TRAVEL · VIAGEM INTELIGENTE</div>
+  <h1>Toda viagem é uma sequência de <span class="mark">decisões</span>. A gente ajuda você a acertar cada uma.</h1>
+  <p>Menos achismo, mais decisão esperta: pra onde ir, quando comprar, onde ficar e como economizar — sem abrir mão da experiência.</p>
+  <div class="ask">O que você quer resolver hoje?</div>
+  <div class="hubs">
+    <a class="hub d1"><div class="ic">🏝️</div><h3>Destinos</h3><small>Pra onde viajar</small></a>
+    <a class="hub d2"><div class="ic">💡</div><h3>Dicas Espertas</h3><small>Como viajar melhor</small></a>
+    <a class="hub d3"><div class="ic">🔥</div><h3>Ofertas</h3><small>Oportunidades agora</small></a>
+    <a class="hub d4"><div class="ic">🧰</div><h3>Ferramentas</h3><small>O que realmente vale</small></a>
+  </div>
+</div></header>
+
+<section class="blk"><div class="wrap">
+  <div class="head">
+    <div><h2>Decisões <span class="u">Espertas</span></h2>
+    <div class="sub">O veredito da gente sobre cada destino — época, custo e pra quem vale.</div></div>
+    <a class="lk">Ver todos os destinos →</a>
+  </div>
+  <div class="passes">
+
+    <div class="pass"><div class="main">
+      <div class="top"><span class="brandtag">✈ DECISÃO ESPERTA</span><span class="flag">🇸🇮 Eslovênia</span></div>
+      <h3>Lago Bled</h3><div class="country">Alpes Julianos · Europa Central</div>
+      <div class="rows">
+        <div class="row"><span class="lbl">Melhor época</span><b>Set · Out</b></div>
+        <div class="row"><span class="lbl">Economia</span><span class="stars">★★★★★</span></div>
+        <div class="row"><span class="lbl">Custo/dia</span><b>€ 70–110</b></div>
+      </div>
+      <div class="chips"><span class="chip">Natureza</span><span class="chip">Casais</span><span class="chip">Road trip</span></div>
+      <div style="margin-top:16px"><a class="go">Ver a decisão →</a></div>
+    </div><div class="stub"><div class="perf"></div>
+      <div class="slbl">Melhor janela</div><div class="sval">SET–OUT</div>
+      <div class="slbl">Perfil</div><div class="sval">★★★★★</div>
+      <div class="verdict">✓ APROVADO</div><div class="barcode"></div>
+    </div></div>
+
+    <div class="pass"><div class="main">
+      <div class="top"><span class="brandtag">✈ DECISÃO ESPERTA</span><span class="flag">🇦🇷 Argentina</span></div>
+      <h3>Bariloche</h3><div class="country">Patagônia · Cordilheira dos Andes</div>
+      <div class="rows">
+        <div class="row"><span class="lbl">Melhor época</span><b>Mar · Abr</b></div>
+        <div class="row"><span class="lbl">Economia</span><span class="stars">★★★★☆</span></div>
+        <div class="row"><span class="lbl">Custo/dia</span><b>R$ 250–400</b></div>
+      </div>
+      <div class="chips"><span class="chip">Família</span><span class="chip">Neve</span><span class="chip">Câmbio bom</span></div>
+      <div style="margin-top:16px"><a class="go">Ver a decisão →</a></div>
+    </div><div class="stub"><div class="perf"></div>
+      <div class="slbl">Melhor janela</div><div class="sval">MAR–ABR</div>
+      <div class="slbl">Perfil</div><div class="sval">★★★★</div>
+      <div class="verdict">✓ APROVADO</div><div class="barcode"></div>
+    </div></div>
+
+  </div>
+</div></section>
+
+<section class="blk" style="padding-top:0"><div class="wrap">
+  <div class="head">
+    <div><h2>Dicas <span class="u">Espertas</span></h2>
+    <div class="sub">Hacks que valem pra qualquer destino — economia e planejamento.</div></div>
+    <a class="lk">Ver todas as dicas →</a>
+  </div>
+  <div class="cards3">
+    <a class="gcard"><div class="badge">PASSAGENS</div><h3>Quando comprar passagem (sem cair em cilada)</h3>
+      <p>A janela ideal, os dias mais baratos e os mitos que fazem você pagar mais.</p>
+      <div class="foot"><span>Guia · 6 min</span><span class="save">economia até 40%</span></div></a>
+    <a class="gcard"><div class="badge">MILHAS</div><h3>Milhas do zero: o primeiro cartão certo</h3>
+      <p>Como começar a acumular sem anuidade pesada e resgatar a 1ª passagem.</p>
+      <div class="foot"><span>Guia · 8 min</span><span class="save">1ª viagem grátis</span></div></a>
+    <a class="gcard"><div class="badge">FAMÍLIA</div><h3>Viajar com criança sem enlouquecer</h3>
+      <p>Roteiro, bagagem e os erros que todo pai de primeira viagem comete.</p>
+      <div class="foot"><span>Guia · 7 min</span><span class="save">menos estresse</span></div></a>
+  </div>
+</div></section>
+
+<section class="blk" style="padding-top:0"><div class="wrap">
+  <div class="head">
+    <div><h2><span class="u">Ferramentas</span> que valem a pena</h2>
+    <div class="sub">Testamos e dizemos a real — com prós, contras e alternativa.</div></div>
+    <a class="lk">Ver todas →</a>
+  </div>
+  <div class="tools">
+    <a class="tool"><div class="ticon">🛏️</div><div>
+      <div style="display:flex;gap:10px;align-items:center"><h3>Booking</h3><span class="verd">✓ Vale a pena</span></div>
+      <p>Melhor cobertura de hotéis e cancelamento grátis. Nem sempre o menor preço.</p>
+      <div class="pc"><span class="pro">＋ cancelamento flexível</span><span class="con">− nem sempre o + barato</span></div>
+      <span class="go2">Ver análise + como economizar →</span></div></a>
+    <a class="tool"><div class="ticon">💳</div><div>
+      <div style="display:flex;gap:10px;align-items:center"><h3>Wise vs Nomad</h3><span class="verd">✓ Depende do uso</span></div>
+      <p>Qual cartão internacional rende mais pro seu perfil de gasto na viagem.</p>
+      <div class="pc"><span class="pro">＋ câmbio real</span><span class="con">− IOF muda por conta</span></div>
+      <span class="go2">Ver o comparativo →</span></div></a>
+  </div>
+</div></section>
+
+<section class="blk" style="padding-top:0"><div class="wrap">
+  <div class="nl">
+    <div><h2>O radar de viagem esperta</h2>
+      <p>Ofertas de verdade, melhores épocas e decisões da semana — direto no seu email. Sem spam.</p></div>
+    <form onsubmit="event.preventDefault()"><input type="email" placeholder="seu@email.com"><button>Embarcar →</button></form>
+  </div>
+</div></section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;width:100%">
+  <div><b style="color:var(--blue)">Conexão</b> Esperta — Smart Travel</div>
+  <div>Protótipo · conexaoesperta.com.br</div>
+</div></footer>
+
+</body>
+</html>
