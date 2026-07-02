@@ -200,71 +200,36 @@ async function renderDossiePage(slug, container) {
       </div>
     </div>
 
-    <div class="tabs">
-      <button class="tab active" data-target="oc">O Caso</button>
-      <button class="tab" data-target="lt">Linha do Tempo</button>
-      <button class="tab" data-target="oe">O Erro</button>
-      <button class="tab" data-target="im">Impacto</button>
-      <button class="tab" data-target="li">Lições</button>
-      <button class="tab" data-target="cu">Curiosidades</button>
-      <button class="tab" data-target="re">Relacionados</button>
-    </div>
-
-    <div class="tab-content active" data-tab="oc">
-      <div class="dossie-body">
-        <div class="dossie-main">
-          ${ytEmbed}
-          <div class="gen-label">⚡ Texto gerado automaticamente pela Claude API</div>
-          ${textos}
-        </div>
-        <div class="dossie-side">
-          ${d.quote ? `
-            <div class="aside-box">
-              <div class="aside-title">Resumo do Caso</div>
-              <div class="aside-quote">${d.quote}</div>
-              <div class="aside-attr">${d.quote_attr}</div>
-            </div>` : ''}
+    <div class="dossie-body">
+      <div class="dossie-main">
+        ${ytEmbed}
+        ${textos}
+      </div>
+      <div class="dossie-side">
+        ${d.quote ? `
           <div class="aside-box">
-            <div class="aside-title">Fail Index</div>
-            <div class="score-list">
-              ${renderScoreBar('Impacto', d.score_impacto, '#FF4B3E')}
-              ${renderScoreBar('Custo', d.score_custo, '#FFD400')}
-              ${renderScoreBar('Vergonha', d.score_vergonha, '#2AA9FF')}
-            </div>
-            <div class="score-total">
-              <div class="score-total-lbl">Score BF</div>
-              <div class="score-total-val">${renderStars(d.score_bf)} ${d.score_bf.toFixed(1)}</div>
-            </div>
+            <div class="aside-title">Resumo do Caso</div>
+            <div class="aside-quote">${d.quote}</div>
+            <div class="aside-attr">${d.quote_attr}</div>
+          </div>` : ''}
+        <div class="aside-box">
+          <div class="aside-title">Fail Index</div>
+          <div class="score-list">
+            ${renderScoreBar('Impacto', d.score_impacto, '#FF4B3E')}
+            ${renderScoreBar('Custo', d.score_custo, '#FFD400')}
+            ${renderScoreBar('Vergonha', d.score_vergonha, '#2AA9FF')}
           </div>
-          ${renderAmazonWidget(d)}
+          <div class="score-total">
+            <div class="score-total-lbl">Score BF</div>
+            <div class="score-total-val">${renderStars(d.score_bf)} ${d.score_bf.toFixed(1)}</div>
+          </div>
         </div>
+        ${renderAmazonWidget(d)}
       </div>
     </div>
 
-    <div class="tab-content" data-tab="lt">
-      ${timelineHTML || '<div class="section"><p style="color:#64748B">Linha do tempo em breve.</p></div>'}
-      ${timelineHTML ? relsHTML : ''}
-    </div>
-
-    <div class="tab-content" data-tab="oe">
-      <div class="section"><p style="color:#64748B;font-size:13px">Análise do erro em produção.</p></div>
-    </div>
-    <div class="tab-content" data-tab="im">
-      <div class="section"><p style="color:#64748B;font-size:13px">Análise de impacto em produção.</p></div>
-    </div>
-    <div class="tab-content" data-tab="li">
-      <div class="section"><p style="color:#64748B;font-size:13px">Lições aprendidas em produção.</p></div>
-    </div>
-    <div class="tab-content" data-tab="cu">
-      <div class="section"><p style="color:#64748B;font-size:13px">Curiosidades em produção.</p></div>
-    </div>
-    <div class="tab-content" data-tab="re">
-      ${relsHTML || '<div class="section"><p style="color:#64748B;font-size:13px">Nenhum relacionado ainda.</p></div>'}
-    </div>
-
-    ${d.tab !== 're' ? timelineHTML : ''}`;
-
-  initTabs();
+    ${timelineHTML}
+    ${relsHTML}`;
 }
 
 /* ─── COLEÇÕES ───────────────────────────────────────────────────── */
