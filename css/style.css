@@ -38,7 +38,9 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image: radial-gradient(rgba(255,212,0,0.03) 1px, transparent 1.4px);
+  background-size: 20px 20px;
   color: var(--text);
   font-family: 'Inter', sans-serif;
   font-size: 15px;
@@ -198,7 +200,18 @@ h1, h2, h3 { font-family: 'Bangers', cursive; letter-spacing: 1px; font-weight: 
   letter-spacing: 0.5px;
 }
 .badge-year { border: 1px solid var(--border-2); color: var(--text-3); }
-.badge-fail { border: 1px solid var(--red); color: var(--red); font-weight: 500; }
+.badge-fail {
+  background: var(--red);
+  color: #fff;
+  border: none;
+  font-family: 'Bangers', cursive;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  padding: 3px 11px;
+  transform: rotate(-4deg);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.45);
+  border-radius: 2px;
+}
 .badge-type { color: var(--text-3); font-size: 12px; }
 
 .badge-cat { border: 1px solid; }
@@ -287,8 +300,9 @@ h1, h2, h3 { font-family: 'Bangers', cursive; letter-spacing: 1px; font-weight: 
   display: block;
 }
 .fail-card:hover {
-  border-color: rgba(255,212,0,0.25);
-  transform: translateY(-2px);
+  border-color: var(--yellow);
+  transform: translateY(-3px) scale(1.015);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.55), 0 0 0 2px rgba(255,212,0,0.35);
 }
 .fc-img {
   position: relative;
@@ -452,9 +466,10 @@ h1, h2, h3 { font-family: 'Bangers', cursive; letter-spacing: 1px; font-weight: 
 }
 .section-title {
   font-family: 'Bangers', cursive;
-  font-size: 22px;
-  letter-spacing: 1px;
+  font-size: 26px;
+  letter-spacing: 1.5px;
   color: var(--yellow);
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.55);
 }
 .section-link { font-size: 12px; color: var(--text-4); }
 .section-link:hover { color: var(--yellow); }
