@@ -1184,3 +1184,10 @@ h1, h2, h3 { font-family: 'Bangers', cursive; letter-spacing: 1px; font-weight: 
 .nav-cta{background:#FFD400;color:#0A0E17;font-weight:800;border:none;padding:10px 18px;border-radius:24px;cursor:pointer;animation:ctaPulse 2.6s infinite;transition:transform .15s}
 .nav-cta:hover{transform:translateY(-1px) scale(1.03)}
 @keyframes ctaPulse{0%{box-shadow:0 0 0 0 rgba(255,212,0,.5)}70%{box-shadow:0 0 0 11px rgba(255,212,0,0)}100%{box-shadow:0 0 0 0 rgba(255,212,0,0)}}
+/* ═══ CONSENT BANNER (LGPD) ═══ */
+.consent-banner{position:fixed;left:16px;right:16px;bottom:16px;z-index:250;background:#12182a;border:1px solid rgba(255,212,0,.35);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 16px 50px rgba(0,0,0,.5);max-width:720px;margin-left:auto;margin-right:auto}
+.consent-txt{font-size:13.5px;color:#cdd5e6;flex:1;min-width:220px}
+.consent-actions{display:flex;gap:10px}
+.consent-ok{background:#FFD400;color:#0A0E17;font-weight:800;border:none;padding:9px 18px;border-radius:22px;cursor:pointer}
+.consent-no{background:transparent;color:#8794ad;border:1px solid rgba(255,255,255,.15);padding:9px 16px;border-radius:22px;cursor:pointer}
+.consent-ok:hover{filter:brightness(1.05)}

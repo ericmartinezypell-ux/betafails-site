@@ -155,6 +155,7 @@ async function renderDossiePage(slug, container) {
   }
 
   document.title = `${d.empresa} — DOSSIÊ ${padCase(d.case_number)} | Beta Fails`;
+  bfTrack('view_dossie', { empresa: d.empresa, slug: d.slug, categoria: d.categoria });
 
   const color = catColor(d.categoria);
   const ytEmbed = d.youtube_id
@@ -482,11 +483,46 @@ function initNewsletterForms() {
   });
 }
 
+/* ─── ANALYTICS (GA4) ────────────────────────────────────────────── */
+function bfTrack(name, params) {
+  if (typeof gtag === 'function') gtag('event', name, params || {});
+}
+
+function initConsent() {
+  const c = localStorage.getItem('bf_consent');
+  if (c === 'granted') { if (typeof gtag === 'function') gtag('consent', 'update', { analytics_storage: 'granted' }); return; }
+  if (c === 'denied') return;
+  const b = document.createElement('div');
+  b.className = 'consent-banner';
+  b.innerHTML = `
+    <span class="consent-txt">🍪 Usamos cookies pra entender qual fail bomba mais. Tranquilo com isso?</span>
+    <div class="consent-actions">
+      <button class="consent-ok">Aceitar</button>
+      <button class="consent-no">Agora não</button>
+    </div>`;
+  document.body.appendChild(b);
+  b.querySelector('.consent-ok').onclick = () => { localStorage.setItem('bf_consent', 'granted'); if (typeof gtag === 'function') gtag('consent', 'update', { analytics_storage: 'granted' }); b.remove(); };
+  b.querySelector('.consent-no').onclick = () => { localStorage.setItem('bf_consent', 'denied'); b.remove(); };
+}
+
+function initTracking() {
+  document.addEventListener('click', (e) => {
+    const yt = e.target.closest('.yt-embed');
+    if (yt) { const t = document.querySelector('.dossie-title'); bfTrack('play_video', { dossie: t ? t.textContent.trim() : '' }); return; }
+    const az = e.target.closest('a[href*="amazon."]');
+    if (az) { bfTrack('click_amazon', { url: az.href }); return; }
+    const hit = e.target.closest('.search-hit');
+    if (hit) { bfTrack('search_click', { url: hit.getAttribute('href') }); }
+  });
+}
+
 /* ─── ROUTER ─────────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   setActiveNav();
   document.querySelectorAll('.js-year').forEach(e => e.textContent = new Date().getFullYear());
   initNewsletterForms();
+  initConsent();
+  initTracking();
   const path = location.pathname;
 
   if (path === '/' || path === '/index.html') initHome();
