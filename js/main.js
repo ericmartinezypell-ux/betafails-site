@@ -370,25 +370,22 @@ async function initLoja() {
         <div class="section-title">LIVROS RECOMENDADOS</div>
         <span class="section-count">${produtos.length} indicações · Amazon Associados</span>
       </div>
-      ${produtos.length ? `<div class="grid-3">
+      ${produtos.length ? `<div class="loja-grid">
         ${produtos.map(d => {
           const isAsin = !!d.amazon_asin;
           const url = isAsin
             ? `https://www.amazon.com.br/dp/${d.amazon_asin}?tag=${TAG}`
             : `https://www.amazon.com.br/s?k=${encodeURIComponent(d.amazon_query)}&tag=${TAG}`;
           const titulo = isAsin ? (d.amazon_titulo || 'Leitura relacionada') : `Livros sobre ${d.empresa}`;
-          const sub = isAsin ? (d.amazon_autor || '') : d.amazon_query;
+          const thumb = d.imagem_card
+            ? `<div class="loja-thumb" style="background-image:url('${d.imagem_card}')"></div>`
+            : `<div class="loja-thumb loja-thumb-ph" style="background:${catBg(d.categoria)}">📚</div>`;
           return `
-          <a class="produto-card" href="${url}" target="_blank" rel="noopener">
-            <div class="produto-img">📚</div>
-            <div class="produto-body">
-              <div class="produto-title">${titulo}</div>
-              <div class="produto-author">${sub}</div>
-              <div style="font-size:11px;color:#64748B;margin-bottom:10px">Indicado no dossiê ${d.empresa}</div>
-              <div class="produto-foot">
-                <span class="produto-comissao">Afiliado Amazon</span>
-                <span class="produto-btn">Ver →</span>
-              </div>
+          <a class="loja-card" href="${url}" target="_blank" rel="noopener">
+            ${thumb}
+            <div class="loja-info">
+              <div class="loja-title">${titulo}</div>
+              <div class="loja-tag">Ver na Amazon →</div>
             </div>
           </a>`;
         }).join('')}
