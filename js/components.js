@@ -114,7 +114,7 @@ function renderAmazonWidget(d) {
     <div class="aside-box">
       <div class="aside-title">Leitura relacionada</div>
       <div class="amazon-card">
-        <div class="amazon-cover">📚</div>
+        ${d.imagem_card ? `<div class="amazon-cover" style="background-image:url('${d.imagem_card}');background-size:cover;background-position:center"></div>` : `<div class="amazon-cover">📚</div>`}
         <div class="amazon-info">
           <div class="amazon-book-title">${titulo}</div>
           <div class="amazon-author">${autor}</div>
