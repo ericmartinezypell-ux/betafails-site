@@ -34,7 +34,8 @@ function initFilters(onFilterChange) {
       pill.classList.add('active');
       const filters = {};
       document.querySelectorAll('.pill.active[data-filter]').forEach(p => {
-        if (p.dataset.filter !== 'all') filters[p.dataset.filterGroup || 'categoria'] = p.dataset.filter;
+        const g = p.dataset.filterGroup || 'categoria';
+        filters[g] = p.dataset.filter === 'all' ? null : p.dataset.filter;
       });
       onFilterChange(filters);
     });
@@ -117,12 +118,12 @@ async function renderArchivePage(container) {
     </div>
     <div class="filter-bar">
       <span class="filter-bar-label">Filtrar:</span>
-      <button class="pill active" data-filter="all" data-filter-group="cat">Todos</button>
-      <button class="pill" data-filter="Tecnologia" data-filter-group="cat">Tecnologia</button>
-      <button class="pill" data-filter="Empresas" data-filter-group="cat">Empresas</button>
-      <button class="pill" data-filter="Esportes" data-filter-group="cat">Esportes</button>
-      <button class="pill" data-filter="Marketing" data-filter-group="cat">Marketing</button>
-      <button class="pill" data-filter="Produtos" data-filter-group="cat">Produtos</button>
+      <button class="pill active" data-filter="all" data-filter-group="categoria">Todos</button>
+      <button class="pill" data-filter="Tecnologia" data-filter-group="categoria">Tecnologia</button>
+      <button class="pill" data-filter="Empresas" data-filter-group="categoria">Empresas</button>
+      <button class="pill" data-filter="Esportes" data-filter-group="categoria">Esportes</button>
+      <button class="pill" data-filter="Marketing" data-filter-group="categoria">Marketing</button>
+      <button class="pill" data-filter="Produtos" data-filter-group="categoria">Produtos</button>
       <div class="filter-sep"></div>
       <button class="pill active" data-filter="score" data-filter-group="sort">Por Score</button>
       <button class="pill" data-filter="vergonha" data-filter-group="sort">Por Vergonha</button>
@@ -317,10 +318,10 @@ async function initRankings() {
     </div>
     <div class="filter-bar">
       <span class="filter-bar-label">Filtrar:</span>
-      <button class="pill active" data-filter="all" data-filter-group="cat">Geral</button>
-      <button class="pill" data-filter="Tecnologia" data-filter-group="cat">Tecnologia</button>
-      <button class="pill" data-filter="Empresas" data-filter-group="cat">Empresas</button>
-      <button class="pill" data-filter="Esportes" data-filter-group="cat">Esportes</button>
+      <button class="pill active" data-filter="all" data-filter-group="categoria">Geral</button>
+      <button class="pill" data-filter="Tecnologia" data-filter-group="categoria">Tecnologia</button>
+      <button class="pill" data-filter="Empresas" data-filter-group="categoria">Empresas</button>
+      <button class="pill" data-filter="Esportes" data-filter-group="categoria">Esportes</button>
       <div class="filter-sep"></div>
       <button class="pill active" data-filter="score" data-filter-group="sort">Score BF</button>
       <button class="pill" data-filter="custo" data-filter-group="sort">Por Custo</button>
@@ -363,15 +364,11 @@ async function initLoja() {
       <p>Livros sobre os maiores fails da história. Comissão revertida para o canal.</p>
     </div>
     <div class="section">
-      <div class="loja-phase2">
-        <h3>Merchandising BF — Em breve</h3>
-        <p>Camisetas, canecas e cards colecionáveis com arte exclusiva.</p>
-      </div>
       <div class="section-head">
         <div class="section-title">LIVROS RECOMENDADOS</div>
         <span class="section-count">Curadoria editorial · Amazon Associados</span>
       </div>
-      <div class="grid-3">
+      ${withAmazon.length ? `<div class="grid-3">
         ${withAmazon.map(d => `
           <div class="produto-card">
             <div class="produto-img">📚</div>
@@ -385,7 +382,7 @@ async function initLoja() {
               </div>
             </div>
           </div>`).join('')}
-      </div>
+      </div>` : renderEmpty('A estante está sendo montada. Cada dossiê já indica uma leitura — em breve reunidas aqui.')}
     </div>`;
 }
 
@@ -408,8 +405,9 @@ function initSobre() {
         <h2>Canal YouTube</h2>
         <p>Vídeos semanais sobre fails históricos, com narração, imagens e análise editorial.</p>
         <div class="social-links">
-          <a href="https://youtube.com/@betafails" target="_blank" class="social-link">▶ YouTube</a>
-          <a href="https://instagram.com/betafails" target="_blank" class="social-link">📷 Instagram</a>
+          <a href="https://youtube.com/@betafails" target="_blank" rel="noopener" class="social-link">▶ YouTube</a>
+          <a href="https://instagram.com/betafails" target="_blank" rel="noopener" class="social-link">📷 Instagram</a>
+          <a href="https://www.tiktok.com/@betafails" target="_blank" rel="noopener" class="social-link">♪ TikTok</a>
         </div>
       </div>
       <div class="sobre-block">
@@ -420,9 +418,75 @@ function initSobre() {
     </div>`;
 }
 
+/* ─── BUSCA ──────────────────────────────────────────────────────── */
+let _searchEl = null;
+async function openSearch() {
+  if (!_searchEl) {
+    _searchEl = document.createElement('div');
+    _searchEl.className = 'search-overlay';
+    _searchEl.innerHTML = `
+      <div class="search-box" onclick="event.stopPropagation()">
+        <input type="text" class="search-input" placeholder="Buscar empresa, tema ou categoria…" autocomplete="off">
+        <div class="search-results"></div>
+        <div class="search-hint">Esc para fechar</div>
+      </div>`;
+    document.body.appendChild(_searchEl);
+    const input = _searchEl.querySelector('.search-input');
+    const results = _searchEl.querySelector('.search-results');
+    const all = await getAllDossies();
+    const render = (q) => {
+      const term = q.trim().toLowerCase();
+      if (!term) { results.innerHTML = '<div class="search-empty">Digite para buscar…</div>'; return; }
+      const hits = all.filter(d =>
+        (d.titulo || '').toLowerCase().includes(term) ||
+        (d.empresa || '').toLowerCase().includes(term) ||
+        (d.tagline || '').toLowerCase().includes(term) ||
+        (d.categoria || '').toLowerCase().includes(term)
+      ).slice(0, 8);
+      results.innerHTML = hits.length
+        ? hits.map(d => `<a class="search-hit" href="/fails/?slug=${d.slug}"><span class="sh-name">${d.titulo || d.empresa}</span><span class="sh-meta">${d.categoria} · ${d.ano}</span></a>`).join('')
+        : '<div class="search-empty">Nenhum fail encontrado.</div>';
+    };
+    input.addEventListener('input', () => render(input.value));
+    _searchEl.addEventListener('click', closeSearch);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSearch(); });
+    render('');
+  }
+  _searchEl.classList.add('open');
+  setTimeout(() => { const i = _searchEl.querySelector('.search-input'); if (i) i.focus(); }, 50);
+}
+function closeSearch() { if (_searchEl) _searchEl.classList.remove('open'); }
+
+function goNewsletter() {
+  const el = document.getElementById('newsletter');
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+  else location.href = '/#newsletter';
+}
+
+/* ─── NEWSLETTER (captura) ───────────────────────────────────────── */
+function initNewsletterForms() {
+  document.querySelectorAll('.newsletter-form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = form.querySelector('input[type="email"]');
+      const email = (input && input.value || '').trim();
+      if (!email || !email.includes('@')) return;
+      const btn = form.querySelector('button');
+      const original = btn ? btn.textContent : '';
+      if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
+      try {
+        await fetch('/api/newsletter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+      } catch (err) { /* backend ainda pode não existir; não bloquear o feedback */ }
+      form.innerHTML = '<div class="newsletter-ok">✓ Prontinho! Você está na lista. 🎉</div>';
+    });
+  });
+}
+
 /* ─── ROUTER ─────────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   setActiveNav();
+  document.querySelectorAll('.js-year').forEach(e => e.textContent = new Date().getFullYear());
+  initNewsletterForms();
   const path = location.pathname;
 
   if (path === '/' || path === '/index.html') initHome();

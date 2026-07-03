@@ -326,15 +326,23 @@ async function fetchDossie(slug) {
 }
 
 async function fetchColecoes() {
-  return COLECOES_SEED;
+  const all = await fetchDossies();
+  const resolved = COLECOES_SEED.map(c => {
+    // dossiês explicitamente listados que existem
+    let lista = c.dossies.map(s => all.find(d => d.slug === s)).filter(Boolean);
+    // completa com dossiês reais das categorias da coleção (evita página vazia)
+    if (lista.length < 2) {
+      const extra = all.filter(d => c.categorias.includes(d.categoria) && !lista.some(x => x.slug === d.slug));
+      lista = lista.concat(extra).slice(0, 6);
+    }
+    return Object.assign({}, c, { dossieLista: lista, count: lista.length });
+  }).filter(c => c.count > 0);
+  return resolved;
 }
 
 async function fetchColecao(slug) {
-  const col = COLECOES_SEED.find(c => c.slug === slug);
-  if (!col) return null;
-  const all = await fetchDossies();
-  col.dossieLista = col.dossies.map(s => all.find(d => d.slug === s)).filter(Boolean);
-  return col;
+  const cols = await fetchColecoes();
+  return cols.find(c => c.slug === slug) || null;
 }
 
 async function fetchRankings(filtros = {}) {

@@ -128,9 +128,10 @@ function renderAmazonWidget(d) {
 function renderColecaoCard(col, dossiesMap) {
   const colors = col.categorias.map(c => catColor(c));
   const bandSegs = colors.map(c => `<div class="colecao-band-seg" style="background:${c}"></div>`).join('');
-  const thumbs = (col.emojis || ['⚡','⚡','⚡']).map(e => {
-    const cat = col.categorias[0] || 'Tecnologia';
-    return `<div class="colecao-thumb" style="background:${catBg(cat)}">${e}</div>`;
+  const cats = col.categorias.length ? col.categorias : ['Tecnologia'];
+  const thumbs = [0, 1, 2].map(i => {
+    const cat = cats[i % cats.length];
+    return `<div class="colecao-thumb" style="background:${catBg(cat)}">${catEmoji(cat)}</div>`;
   }).join('');
 
   return `
@@ -142,7 +143,7 @@ function renderColecaoCard(col, dossiesMap) {
         <div class="colecao-title">${col.titulo}</div>
         <div class="colecao-desc">${col.descricao}</div>
         <div class="colecao-foot">
-          <span class="colecao-count">${col.dossies.length} dossiês</span>
+          <span class="colecao-count">${col.count != null ? col.count : col.dossies.length} dossiês</span>
           <span class="colecao-cta">Ver →</span>
         </div>
       </div>
@@ -151,9 +152,10 @@ function renderColecaoCard(col, dossiesMap) {
 
 /* ─── FEATURED COLECAO ───────────────────────────────────────────── */
 function renderFeaturedColecao(col) {
-  const thumbs = (col.emojis || ['⚡','⚡','⚡']).map((e, i) => {
-    const bgs = ['linear-gradient(135deg,#1a0800,#3d1a00)', 'linear-gradient(135deg,#1a1500,#3d3200)', 'linear-gradient(135deg,#001a2a,#003d5c)'];
-    return `<div class="thumb-mini" style="background:${bgs[i%3]}">${e}</div>`;
+  const cats = col.categorias.length ? col.categorias : ['Tecnologia'];
+  const thumbs = [0, 1, 2].map(i => {
+    const cat = cats[i % cats.length];
+    return `<div class="thumb-mini" style="background:${catBg(cat)}">${catEmoji(cat)}</div>`;
   }).join('');
 
   const catBadges = col.categorias.map(c => `<span class="badge" style="background:${catColor(c)}22;color:${catColor(c)};border:1px solid ${catColor(c)}44;font-size:10px;padding:2px 8px;border-radius:3px">${c}</span>`).join('');
@@ -168,7 +170,7 @@ function renderFeaturedColecao(col) {
         </div>
         <div>
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-            <span style="font-size:12px;color:#FFD400;font-weight:500">● ${col.dossies.length} dossiês</span>
+            <span style="font-size:12px;color:#FFD400;font-weight:500">● ${col.count != null ? col.count : col.dossies.length} dossiês</span>
             ${catBadges}
           </div>
           <span class="btn btn-outline" style="font-size:12px;padding:7px 16px">Ver coleção →</span>

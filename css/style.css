@@ -1160,3 +1160,27 @@ h1, h2, h3 { font-family: 'Bangers', cursive; letter-spacing: 1px; font-weight: 
   .grid-3 { grid-template-columns: 1fr; }
   .dossie-title { font-size: 48px; }
 }
+
+/* ═══ BUSCA (overlay) ═══ */
+.search-overlay{position:fixed;inset:0;z-index:200;background:rgba(6,9,17,.82);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding-top:12vh}
+.search-overlay.open{display:flex}
+.search-box{width:min(600px,92vw);background:#12182a;border:1px solid rgba(255,255,255,.1);border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.6);overflow:hidden}
+.search-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.08);color:#fff;font-size:18px;padding:20px 22px;outline:none}
+.search-input::placeholder{color:#5b667e}
+.search-results{max-height:52vh;overflow:auto}
+.search-hit{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 22px;border-bottom:1px solid rgba(255,255,255,.05);color:#e6ebf5;text-decoration:none;transition:background .15s}
+.search-hit:hover{background:rgba(255,212,0,.08)}
+.sh-name{font-weight:700;font-size:15px}
+.sh-meta{font-size:12px;color:#7c879e;white-space:nowrap}
+.search-empty{padding:26px 22px;color:#6b7690;font-size:14px}
+.search-hint{padding:10px 22px;font-size:11px;color:#4a5470;text-align:right;background:rgba(255,255,255,.02)}
+
+/* ═══ NEWSLETTER: sucesso + CTA agressivo ═══ */
+.newsletter-ok{font-size:17px;font-weight:800;color:#0A0E17;background:#FFD400;padding:14px 24px;border-radius:10px;display:inline-block}
+.newsletter-cta{border:2px solid #FFD400;box-shadow:0 0 44px rgba(255,212,0,.14)}
+.newsletter-cta .btn-yellow{font-size:16px;padding:14px 28px;animation:ctaPulse 2.4s infinite}
+
+/* ═══ CTA header agressivo ═══ */
+.nav-cta{background:#FFD400;color:#0A0E17;font-weight:800;border:none;padding:10px 18px;border-radius:24px;cursor:pointer;animation:ctaPulse 2.6s infinite;transition:transform .15s}
+.nav-cta:hover{transform:translateY(-1px) scale(1.03)}
+@keyframes ctaPulse{0%{box-shadow:0 0 0 0 rgba(255,212,0,.5)}70%{box-shadow:0 0 0 11px rgba(255,212,0,0)}100%{box-shadow:0 0 0 0 rgba(255,212,0,0)}}
