@@ -378,7 +378,7 @@ async function initLoja() {
             : `https://www.amazon.com.br/s?k=${encodeURIComponent(d.amazon_query)}&tag=${TAG}`;
           const titulo = isAsin ? (d.amazon_titulo || 'Leitura relacionada') : `Livros sobre ${d.empresa}`;
           const thumb = d.imagem_card
-            ? `<div class="loja-thumb" style="background-image:url('${d.imagem_card}')"></div>`
+            ? `<div class="loja-thumb" style="background-image:url('${cldThumb(d.imagem_card, 400)}')"></div>`
             : `<div class="loja-thumb loja-thumb-ph" style="background:${catBg(d.categoria)}">📚</div>`;
           return `
           <a class="loja-card" href="${url}" target="_blank" rel="noopener">
