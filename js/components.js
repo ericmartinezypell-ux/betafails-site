@@ -129,7 +129,10 @@ function renderColecaoCard(col, dossiesMap) {
   const colors = col.categorias.map(c => catColor(c));
   const bandSegs = colors.map(c => `<div class="colecao-band-seg" style="background:${c}"></div>`).join('');
   const cats = col.categorias.length ? col.categorias : ['Tecnologia'];
+  const previews = col.dossieLista || [];
   const thumbs = [0, 1, 2].map(i => {
+    const d = previews[i];
+    if (d && d.imagem_card) return `<div class="colecao-thumb" style="background-image:url('${d.imagem_card}');background-size:cover;background-position:center"></div>`;
     const cat = cats[i % cats.length];
     return `<div class="colecao-thumb" style="background:${catBg(cat)}">${catEmoji(cat)}</div>`;
   }).join('');
@@ -153,7 +156,10 @@ function renderColecaoCard(col, dossiesMap) {
 /* ─── FEATURED COLECAO ───────────────────────────────────────────── */
 function renderFeaturedColecao(col) {
   const cats = col.categorias.length ? col.categorias : ['Tecnologia'];
+  const previews = col.dossieLista || [];
   const thumbs = [0, 1, 2].map(i => {
+    const d = previews[i];
+    if (d && d.imagem_card) return `<div class="thumb-mini" style="background-image:url('${d.imagem_card}');background-size:cover;background-position:center"></div>`;
     const cat = cats[i % cats.length];
     return `<div class="thumb-mini" style="background:${catBg(cat)}">${catEmoji(cat)}</div>`;
   }).join('');

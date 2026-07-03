@@ -195,6 +195,36 @@ const COLECOES_SEED = [
   },
 ];
 
+/* ─── COLEÇÕES (temáticas, populadas por regra sobre os dossiês reais) ─ */
+const COLECOES = [
+  { slug: 'gigantes-que-cairam', titulo: 'Gigantes que caíram', numero: 1, destaque: true,
+    descricao: 'Impérios corporativos que dominaram seus mercados — e subestimaram o futuro até quebrar.',
+    filtro: { categoria: 'Empresas' }, categorias: ['Empresas'] },
+  { slug: 'quando-a-tecnologia-falhou', titulo: 'Quando a tecnologia falhou', numero: 2, destaque: false,
+    descricao: 'Da Concorde ao General Magic — inovações geniais que simplesmente não decolaram.',
+    filtro: { categoria: 'Tecnologia' }, categorias: ['Tecnologia'] },
+  { slug: 'marketing-que-virou-desastre', titulo: 'Marketing que virou desastre', numero: 3, destaque: false,
+    descricao: 'Campanhas e decisões de marca que explodiram na cara de quem as criou.',
+    filtro: { categoria: 'Marketing' }, categorias: ['Marketing'] },
+  { slug: 'vexames-do-esporte', titulo: 'Vexames históricos do esporte', numero: 4, destaque: false,
+    descricao: 'Os erros que humilharam craques, técnicos e seleções inteiras.',
+    filtro: { categoria: 'Esportes' }, categorias: ['Esportes'] },
+  { slug: 'decisoes-que-mudaram-a-historia', titulo: 'Decisões que mudaram a história', numero: 5, destaque: false,
+    descricao: 'Erros estratégicos e políticos que redesenharam o mundo.',
+    filtro: { categoria: 'Política' }, categorias: ['Política'] },
+  { slug: 'produtos-que-ninguem-pediu', titulo: 'Produtos que ninguém pediu', numero: 6, destaque: false,
+    descricao: 'Lançamentos que o mercado rejeitou na hora.',
+    filtro: { categoria: 'Produtos' }, categorias: ['Produtos'] },
+];
+
+function matchFiltro(d, filtro) {
+  if (!filtro) return true;
+  if (filtro.categoria && d.categoria !== filtro.categoria) return false;
+  if (filtro.anoMax != null && !(d.ano <= filtro.anoMax)) return false;
+  if (filtro.anoMin != null && !(d.ano >= filtro.anoMin)) return false;
+  return true;
+}
+
 /* ─── UTILITÁRIOS ────────────────────────────────────────────────── */
 function catColor(categoria) {
   const map = {
@@ -327,17 +357,10 @@ async function fetchDossie(slug) {
 
 async function fetchColecoes() {
   const all = await fetchDossies();
-  const resolved = COLECOES_SEED.map(c => {
-    // dossiês explicitamente listados que existem
-    let lista = c.dossies.map(s => all.find(d => d.slug === s)).filter(Boolean);
-    // completa com dossiês reais das categorias da coleção (evita página vazia)
-    if (lista.length < 2) {
-      const extra = all.filter(d => c.categorias.includes(d.categoria) && !lista.some(x => x.slug === d.slug));
-      lista = lista.concat(extra).slice(0, 6);
-    }
+  return COLECOES.map(c => {
+    const lista = applyFilters(all.filter(d => matchFiltro(d, c.filtro)), { sort: 'score' });
     return Object.assign({}, c, { dossieLista: lista, count: lista.length });
   }).filter(c => c.count > 0);
-  return resolved;
 }
 
 async function fetchColecao(slug) {
