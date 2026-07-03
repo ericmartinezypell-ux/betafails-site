@@ -1191,3 +1191,6 @@ h1, h2, h3 { font-family: 'Bangers', cursive; letter-spacing: 1px; font-weight: 
 .consent-ok{background:#FFD400;color:#0A0E17;font-weight:800;border:none;padding:9px 18px;border-radius:22px;cursor:pointer}
 .consent-no{background:transparent;color:#8794ad;border:1px solid rgba(255,255,255,.15);padding:9px 16px;border-radius:22px;cursor:pointer}
 .consent-ok:hover{filter:brightness(1.05)}
+/* Amazon affiliate disclosure */
+.footer-legal{font-size:11px;color:#4a5470;margin-top:8px;text-align:center;max-width:520px;margin-left:auto;margin-right:auto}
+.amazon-disclosure{font-size:10.5px;color:#64748B;margin-top:8px;line-height:1.3}

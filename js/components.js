@@ -121,6 +121,7 @@ function renderAmazonWidget(d) {
           <a href="${url}" target="_blank" rel="noopener" class="amazon-btn">Ver na Amazon ↗</a>
         </div>
       </div>
+      <div class="amazon-disclosure">Como Associado da Amazon, ganhamos com compras qualificadas.</div>
     </div>`;
 }
 
