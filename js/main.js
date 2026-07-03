@@ -356,34 +356,44 @@ async function initLoja() {
   if (!content) return;
 
   const dossies = await fetchDossies({ sort: 'score' });
-  const withAmazon = dossies.filter(d => d.amazon_asin);
+  const TAG = 'betafails-20';
+  const produtos = dossies.filter(d => d.amazon_asin || d.amazon_query);
 
   content.innerHTML = `
     <div class="page-hero">
       <div class="page-hero-label">Vitrine curada</div>
       <h1>LOJA</h1>
-      <p>Livros sobre os maiores fails da história. Comissão revertida para o canal.</p>
+      <p>Livros e leituras sobre os maiores fails da história. Comissão de afiliado revertida para o canal.</p>
     </div>
     <div class="section">
       <div class="section-head">
         <div class="section-title">LIVROS RECOMENDADOS</div>
-        <span class="section-count">Curadoria editorial · Amazon Associados</span>
+        <span class="section-count">${produtos.length} indicações · Amazon Associados</span>
       </div>
-      ${withAmazon.length ? `<div class="grid-3">
-        ${withAmazon.map(d => `
-          <div class="produto-card">
+      ${produtos.length ? `<div class="grid-3">
+        ${produtos.map(d => {
+          const isAsin = !!d.amazon_asin;
+          const url = isAsin
+            ? `https://www.amazon.com.br/dp/${d.amazon_asin}?tag=${TAG}`
+            : `https://www.amazon.com.br/s?k=${encodeURIComponent(d.amazon_query)}&tag=${TAG}`;
+          const titulo = isAsin ? (d.amazon_titulo || 'Leitura relacionada') : `Livros sobre ${d.empresa}`;
+          const sub = isAsin ? (d.amazon_autor || '') : d.amazon_query;
+          return `
+          <a class="produto-card" href="${url}" target="_blank" rel="noopener">
             <div class="produto-img">📚</div>
             <div class="produto-body">
-              <div class="produto-title">${d.amazon_titulo}</div>
-              <div class="produto-author">${d.amazon_autor}</div>
+              <div class="produto-title">${titulo}</div>
+              <div class="produto-author">${sub}</div>
               <div style="font-size:11px;color:#64748B;margin-bottom:10px">Indicado no dossiê ${d.empresa}</div>
               <div class="produto-foot">
                 <span class="produto-comissao">Afiliado Amazon</span>
-                <a href="https://www.amazon.com.br/dp/${d.amazon_asin}?tag=betafails-20" target="_blank" rel="noopener" class="produto-btn">Ver →</a>
+                <span class="produto-btn">Ver →</span>
               </div>
             </div>
-          </div>`).join('')}
-      </div>` : renderEmpty('A estante está sendo montada. Cada dossiê já indica uma leitura — em breve reunidas aqui.')}
+          </a>`;
+        }).join('')}
+      </div>` : renderEmpty('A estante está sendo montada.')}
+      <div class="amazon-disclosure" style="text-align:center;margin-top:22px">Como Associado da Amazon, o Beta Fails ganha com compras qualificadas.</div>
     </div>`;
 }
 
