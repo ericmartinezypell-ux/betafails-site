@@ -53,7 +53,7 @@ async function initHome() {
   if (heroEl && hero) {
     const color = catColor(hero.categoria);
     const bgStyle = hero.imagem_card
-      ? `background-image:url('${hero.imagem_card}');background-size:cover;background-position:center;`
+      ? `background-image:url('${cldOpt(hero.imagem_card, 1100)}');background-size:cover;background-position:center;`
       : `background:${catBg(hero.categoria)};`;
     heroEl.innerHTML = `
       <div class="home-hero-right" style="${bgStyle}">

@@ -10,7 +10,7 @@ function renderStars(score) {
 function renderFailCard(d, options = {}) {
   const color = catColor(d.categoria);
   const bg = d.imagem_card
-    ? `background-image:url('${d.imagem_card}');background-size:cover;background-position:center;`
+    ? `background-image:url('${cldOpt(d.imagem_card, 500)}');background-size:cover;background-position:center;`
     : `background:${catBg(d.categoria)};`;
   const emoji = d.imagem_card ? '' : `<div class="fc-img-inner">${catEmoji(d.categoria)}</div>`;
   const href = options.colecaoSlug
@@ -36,7 +36,7 @@ function renderFailCard(d, options = {}) {
 function renderRankItem(d, rank) {
   const color = catColor(d.categoria);
   const bg = d.imagem_card
-    ? `background-image:url('${d.imagem_card}');background-size:cover;background-position:center;`
+    ? `background-image:url('${cldOpt(d.imagem_card, 500)}');background-size:cover;background-position:center;`
     : `background:${catBg(d.categoria)};`;
   const numClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : '';
   const isTop = rank <= 2 ? 'rank-top' : '';
@@ -133,7 +133,7 @@ function renderColecaoCard(col, dossiesMap) {
   const previews = col.dossieLista || [];
   const thumbs = [0, 1, 2].map(i => {
     const d = previews[i];
-    if (d && d.imagem_card) return `<div class="colecao-thumb" style="background-image:url('${d.imagem_card}');background-size:cover;background-position:center"></div>`;
+    if (d && d.imagem_card) return `<div class="colecao-thumb" style="background-image:url('${cldOpt(d.imagem_card, 320)}');background-size:cover;background-position:center"></div>`;
     const cat = cats[i % cats.length];
     return `<div class="colecao-thumb" style="background:${catBg(cat)}">${catEmoji(cat)}</div>`;
   }).join('');
@@ -160,7 +160,7 @@ function renderFeaturedColecao(col) {
   const previews = col.dossieLista || [];
   const thumbs = [0, 1, 2].map(i => {
     const d = previews[i];
-    if (d && d.imagem_card) return `<div class="thumb-mini" style="background-image:url('${d.imagem_card}');background-size:cover;background-position:center"></div>`;
+    if (d && d.imagem_card) return `<div class="thumb-mini" style="background-image:url('${cldOpt(d.imagem_card, 420)}');background-size:cover;background-position:center"></div>`;
     const cat = cats[i % cats.length];
     return `<div class="thumb-mini" style="background:${catBg(cat)}">${catEmoji(cat)}</div>`;
   }).join('');

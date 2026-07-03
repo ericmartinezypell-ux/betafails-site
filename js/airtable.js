@@ -263,6 +263,11 @@ function cldThumb(url, w) {
   if (!url || url.indexOf('/upload/') === -1) return url;
   return url.replace('/upload/', `/upload/c_fill,w_${w},h_${w},q_auto,f_auto/`);
 }
+// Otimiza preservando o aspecto (só redimensiona por largura + qualidade/formato auto)
+function cldOpt(url, w) {
+  if (!url || url.indexOf('/upload/') === -1) return url;
+  return url.replace('/upload/', `/upload/w_${w},q_auto,f_auto/`);
+}
 
 /* ─── API (Pages Function → Airtable) ────────────────────────────── */
 async function apiFetch(query = '') {
