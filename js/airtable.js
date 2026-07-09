@@ -291,6 +291,7 @@ function airtableRecord(r) {
 
   return {
     id: r.id,
+    criado_em: r.createdTime || '',
     case_number: f.case_number,
     slug: f.slug,
     empresa: f.empresa,
@@ -324,6 +325,8 @@ function applyFilters(data, filtros = {}) {
   if (filtros.sort === 'score')    out.sort((a, b) => b.score_bf - a.score_bf);
   if (filtros.sort === 'custo')    out.sort((a, b) => b.score_custo - a.score_custo);
   if (filtros.sort === 'vergonha') out.sort((a, b) => b.score_vergonha - a.score_vergonha);
+  if (filtros.sort === 'recent')   out.sort((a, b) =>
+    new Date(b.publicado_em || b.criado_em || 0) - new Date(a.publicado_em || a.criado_em || 0));
   return out;
 }
 

@@ -44,9 +44,9 @@ function initFilters(onFilterChange) {
 
 /* ─── HOME ───────────────────────────────────────────────────────── */
 async function initHome() {
-  const dossies = await fetchDossies({ sort: 'score' });
-  const hero = dossies[0];
-  const grid = dossies.slice(1, 7);
+  const dossies = await fetchDossies({ sort: 'recent' });
+  const hero = dossies[0];        // último publicado entra no hero
+  const grid = dossies.slice(1, 7); // e desce para "Últimos Fails", empurrando o resto
 
   // Hero
   const heroEl = document.getElementById('home-hero');
